@@ -6,12 +6,10 @@ require("./database/mongoose");
 const express = require("express");
 const path = require("path");
 const app = express();
-const bcrypt = require("bcrypt");
 const passport = require("passport");
 const session = require("express-session");
 const methodOverride = require("method-override");
 
-const User = require("./models/user");
 const initializePassport = require("./passportConfig");
 const auth = require("./middleware/auth");
 
