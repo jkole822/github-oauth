@@ -34,14 +34,16 @@ app.use(methodOverride("_method"));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", checkAuthenticated, (req, res) => {
+app.get("/", auth, (req, res) => {
 	res.sendFile(publicDirPath + "/index.html");
 });
 
+// If user is authenticated, proceed with request.
 app.get("/login", checkNotAuthenticated, (req, res) => {
 	res.sendFile(publicDirPath + "/login.html");
 });
 
+// If user is authenticated, proceed with request.
 app.get(
 	"/auth/github",
 	checkNotAuthenticated,
@@ -50,8 +52,10 @@ app.get(
 	})
 );
 
+// If user is authenticated, proceed with request.
 app.get(
 	"/auth/github/callback",
+	checkNotAuthenticated,
 	passport.authenticate("github", { failureRedirect: "/login" }),
 	function (req, res) {
 		res.redirect("/");
@@ -63,17 +67,9 @@ app.delete("/logout", (req, res) => {
 	res.redirect("/login");
 });
 
-function checkAuthenticated(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-
-	res.redirect("/login");
-}
-
 function checkNotAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
-		return res.redirect("/");
+		return res.redirect("/login");
 	}
 	next();
 }

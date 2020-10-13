@@ -9,25 +9,28 @@ function intialize(passport) {
 				clientSecret: process.env.GITHUB_CLIENT_SECRET,
 				callbackURL: "http://localhost:3000/auth/github/callback",
 			},
-			function (accessToken, refreshToken, profile, done) {
-				const username = profile.username;
+			async function (accessToken, refreshToken, profile, done) {
 				const id = profile.id;
-				User.findOne({ username }, function (err, user) {
+				const username = profile.username;
+
+				try {
+					let user = await User.findOne({ id });
+
 					if (!user) {
-						const newUser = new User({
+						user = new User({
 							id,
 							username,
 						});
 
-						newUser.save(function (err) {
-							if (err) console.log(err);
-							newUser.generateAuthToken();
-							return done(err, user);
-						});
-					} else {
-						return done(err, user);
+						await user.save();
+						user.generateAuthToken();
+						return done(null, user);
 					}
-				});
+
+					return done(null, user);
+				} catch (e) {
+					console.log(e);
+				}
 			}
 		)
 	);
