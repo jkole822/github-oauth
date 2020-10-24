@@ -4,20 +4,21 @@ require("./database/mongoose");
 const express = require("express");
 const app = express();
 const passport = require("passport");
-// const session = require("express-session");
 const cookieSession = require("cookie-session");
 
 const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
 const passportGoogle = require("./config/passport-google");
+const passportFacebook = require("./config/passport-facebook");
 const passportGithub = require("./config/passport-github");
 
 app.set("view engine", "ejs");
 
+// Session stores user information for 30 minutes
 app.use(
 	cookieSession({
 		keys: [process.env.SESSION_SECRET],
-		maxAge: 1000 * 60 * 20,
+		maxAge: 1000 * 60 * 30,
 	})
 );
 
@@ -29,6 +30,7 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 
 passportGoogle(passport);
+passportFacebook(passport);
 passportGithub(passport);
 
 app.get("/", (req, res) => {

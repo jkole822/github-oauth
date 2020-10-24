@@ -1,18 +1,17 @@
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/user");
 
 function intialize(passport) {
 	passport.use(
-		new GoogleStrategy(
+		new FacebookStrategy(
 			{
-				clientID: process.env.GOOGLE_CLIENT_ID,
-				clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-				callbackURL: "/auth/google/redirect",
+				clientID: process.env.FACEBOOK_CLIENT_ID,
+				clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+				callbackURL: "/auth/facebook/redirect",
 			},
-			async (accessToken, refreshToken, profile, done) => {
+			async function (accessToken, refreshToken, profile, done) {
 				const id = profile.id;
 				const username = profile.displayName;
-				const thumbnail = profile._json.picture;
 
 				try {
 					let user = await User.findOne({ id });
@@ -21,7 +20,6 @@ function intialize(passport) {
 						user = new User({
 							id,
 							username,
-							thumbnail,
 						});
 
 						await user.save();
