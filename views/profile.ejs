@@ -62,6 +62,21 @@
 		</header>
 		<main>
 			<img src="<%= user.thumbnail %>" />
+
+			<!-- Form -->
+			<form action="/data" method="POST">
+				<div class="form-group">
+					<label for="information">Example</label>
+					<input
+						type="text"
+						class="form-control"
+						id="information"
+						name="information"
+						placeholder="Example Input"
+					/>
+				</div>
+				<button class="btn btn-dark" type="submit">Submit</button>
+			</form>
 		</main>
 
 		<script

@@ -8,6 +8,7 @@ const cookieSession = require("cookie-session");
 
 const authRoutes = require("./routes/auth-routes");
 const profileRoutes = require("./routes/profile-routes");
+const dataRoutes = require("./routes/data-routes");
 const passportGoogle = require("./config/passport-google");
 const passportFacebook = require("./config/passport-facebook");
 const passportGithub = require("./config/passport-github");
@@ -28,6 +29,7 @@ app.use(passport.session());
 
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
+app.use(dataRoutes);
 
 passportGoogle(passport);
 passportFacebook(passport);

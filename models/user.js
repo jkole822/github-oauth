@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
 	thumbnail: String,
 });
 
+userSchema.virtual("data", {
+	ref: "Data",
+	localField: "id",
+	foreignField: "owner",
+});
+
 const User = mongoose.model("user", userSchema);
 
 module.exports = User;
