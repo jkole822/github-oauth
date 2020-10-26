@@ -1,14 +1,7 @@
 const express = require("express");
 const Data = require("../models/data");
 const router = new express.Router();
-
-const authCheck = (req, res, next) => {
-	if (!req.user) {
-		res.redirect("/auth/login");
-	} else {
-		next();
-	}
-};
+const { authCheck } = require("../middleware/authMiddleware");
 
 // POST New Data Object Associated with User
 router.post("/data", authCheck, async (req, res) => {
