@@ -1,52 +1,63 @@
-const router = require("express").Router();
 const passport = require("passport");
 
-router.get("/login", (req, res) => {
-	res.render("login", { user: req.user });
-});
+module.exports = app => {
+	app.get("/", (req, res) => {
+		res.render("home", { user: req.user });
+	});
 
-router.get("/logout", (req, res) => {
-	req.logout();
-	res.redirect("/");
-});
+	app.get("/auth/login", (req, res) => {
+		res.render("login", { user: req.user });
+	});
 
-// Send request to authenticate with google.
-// Upon successfully authenticating, google will provide a code
-// back to the application
-router.get(
-	"/google",
-	passport.authenticate("google", {
-		scope: ["profile"],
-	})
-);
+	app.get("/auth/logout", (req, res) => {
+		req.logout();
+		res.redirect("/");
+	});
 
-// passport.authenticate('google') exchanges code received from initial call
-// to passport.authenticate('google') for information about the user.
-// Callback function inside Google Strategy will fire before the callback of
-// route handler below.
-router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-	res.redirect("/profile");
-});
+	// Send request to authenticate with google.
+	// Upon successfully authenticating, google will provide a code
+	// back to the application
+	app.get(
+		"/auth/google",
+		passport.authenticate("google", {
+			scope: ["profile"],
+		})
+	);
 
-router.get("/facebook", passport.authenticate("facebook"));
+	// passport.authenticate('google') exchanges code received from initial call
+	// to passport.authenticate('google') for information about the user.
+	// Callback function inside Google Strategy will fire before the callback of
+	// route handler below.
+	app.get(
+		"/auth/google/redirect",
+		passport.authenticate("google"),
+		(req, res) => {
+			res.redirect("/profile");
+		}
+	);
 
-router.get(
-	"/facebook/redirect",
-	passport.authenticate("facebook"),
-	(req, res) => {
-		res.redirect("/profile");
-	}
-);
+	app.get("/auth/facebook", passport.authenticate("facebook"));
 
-router.get(
-	"/github",
-	passport.authenticate("github", {
-		scope: ["profile"],
-	})
-);
+	app.get(
+		"/auth/facebook/redirect",
+		passport.authenticate("facebook"),
+		(req, res) => {
+			res.redirect("/profile");
+		}
+	);
 
-router.get("/github/redirect", passport.authenticate("github"), (req, res) => {
-	res.redirect("/profile");
-});
+	app.get(
+		"/auth/github",
+		passport.authenticate("github", {
+			scope: ["profile"],
+		})
+	);
 
-module.exports = router;
+	app.get(
+		"/auth/github/redirect",
+		passport.authenticate("github"),
+		(req, res) => {
+			res.redirect("/profile");
+		}
+	);
+};

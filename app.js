@@ -1,21 +1,25 @@
-require("dotenv").config();
-require("./database/mongoose");
-
 const express = require("express");
-const app = express();
-const passport = require("passport");
-const cookieSession = require("cookie-session");
+const mongoose = require("mongoose");
 
-const authRoutes = require("./routes/auth-routes");
-const profileRoutes = require("./routes/profile-routes");
-const dataRoutes = require("./routes/data-routes");
-const passportGoogle = require("./config/passport-google");
-const passportFacebook = require("./config/passport-facebook");
-const passportGithub = require("./config/passport-github");
+const app = express();
+const port = process.env.PORT || 5000;
+require("dotenv").config();
+const cookieSession = require("cookie-session");
+const bodyParser = require("body-parser");
+const passport = require("passport");
+
+mongoose.connect(process.env.MONGODB_URL);
+
+require("./models/user");
+require("./services/passport/facebook");
+require("./services/passport/github");
+require("./services/passport/google");
 
 app.set("view engine", "ejs");
 
 // Session stores user information for 30 minutes
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(
 	cookieSession({
 		keys: [process.env.SESSION_SECRET],
@@ -23,22 +27,12 @@ app.use(
 	})
 );
 
-app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
-app.use(dataRoutes);
+require("./routes/auth-routes")(app);
+require("./routes/profile-routes")(app);
 
-passportGoogle(passport);
-passportFacebook(passport);
-passportGithub(passport);
-
-app.get("/", (req, res) => {
-	res.render("home", { user: req.user });
-});
-
-app.listen(3000, () => {
-	console.log("App listening on port 3000");
+app.listen(port, () => {
+	console.log(`Server is listening on port ${port}`);
 });
