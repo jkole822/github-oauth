@@ -1,5 +1,5 @@
-# github-oauth
+# OAuth Setup
 
 ## Description
 
-Boilerplate for GitHub, Google, and Facebook OAuth
+Basic setup for authenticating with Google, Facebook, and Github using Passport.
